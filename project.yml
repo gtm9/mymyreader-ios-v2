@@ -1,0 +1,25 @@
+name: VoiceNotes
+options:
+  bundleIdPrefix: com.example
+packages:
+  Qwen3TTS:
+    path: ../mlx-swift-qwen3-tts
+targets:
+  VoiceNotes:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Sources
+      - path: Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        type: folder
+    dependencies:
+      - package: Qwen3TTS
+        product: Qwen3TTS
+    entitlements:
+      path: Entitlements.entitlements
+    info:
+      path: Info.plist
+      properties:
+        NSMicrophoneUsageDescription: "VoiceNotes needs microphone access to record a reference voice for audio playback of your notes."
+        UILaunchStoryboardName: ""
