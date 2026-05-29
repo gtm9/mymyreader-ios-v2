@@ -3,6 +3,9 @@ import AVFoundation
 import Qwen3TTS
 import MLX
 import os
+#if os(iOS)
+import UIKit
+#endif
 
 private let logger = Logger(subsystem: "com.example.VoiceNotes", category: "TTSManager")
 
@@ -18,6 +21,21 @@ class TTSManager {
     var isGenerating = false
     var generationProgress: Double = 0.0
     var errorMessage: String?
+    
+    var activeNoteID: UUID?
+    var generationStartTime: CFAbsoluteTime?
+    
+    var pendingNotes: Set<UUID> = []
+    private var latestTask: Task<URL, Error>?
+    
+    // Caching
+    private var cachedReferenceURL: URL?
+    private var promptCache: TTSPromptCache?
+    
+    // Streaming Player
+    let streamPlayer = AudioStreamPlayer()
+
+    private var lifecycleObserver: Any?
 
     init() {
         // Enforce strict memory limits to survive iOS Jetsam
@@ -29,13 +47,37 @@ class TTSManager {
         } else {
             self.errorMessage = "TTS model not found in app bundle."
         }
+        
+        #if os(iOS)
+        lifecycleObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willResignActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleBackgroundTransition()
+        }
+        #endif
+    }
+    
+    deinit {
+        if let observer = lifecycleObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
+    private func handleBackgroundTransition() {
+        logger.info("App entering background. Cancelling active TTS tasks to prevent Metal crash.")
+        self.latestTask?.cancel()
+        self.pendingNotes.removeAll()
+        self.activeNoteID = nil
+        self.isGenerating = false
+        self.generationProgress = 0.0
     }
 
     func loadModel(at url: URL) async {
         logger.info("Starting TTS model load from \(url.lastPathComponent)")
         let startTime = CFAbsoluteTimeGetCurrent()
         do {
-            // loadAudioEncoder: false — we only need speaker embeddings, not ICL vocoder
             let config = Qwen3TTSPipelineConfiguration(loadAudioEncoder: false)
             let newPipeline = try Qwen3TTSPipeline(modelPath: url, configuration: config)
             let duration = CFAbsoluteTimeGetCurrent() - startTime
@@ -52,10 +94,55 @@ class TTSManager {
             }
         }
     }
+    
+    /// Precomputes and caches the voice embedding if the reference audio changed.
+    private func updatePromptCacheIfNeeded(referenceAudioURL: URL) throws {
+        guard let pipeline = pipeline else { throw TTSError.modelNotLoaded }
+        
+        if cachedReferenceURL != referenceAudioURL || promptCache == nil {
+            logger.info("Building new Prompt Cache for voice cloning...")
+            let audioSamples = try loadAudioSamples(from: referenceAudioURL)
+            guard let cache = pipeline.buildPromptCache(from: audioSamples) else {
+                throw TTSError.embeddingFailed
+            }
+            self.promptCache = cache
+            self.cachedReferenceURL = referenceAudioURL
+        }
+    }
 
     /// Generate audio for the given note text using the supplied reference voice.
-    /// Returns the URL of the saved WAV file.
-    func generateAudio(for noteText: String, referenceAudioURL: URL) async throws -> URL {
+    /// Streams directly to AudioStreamPlayer and saves to a WAV file when complete.
+    func generateAudio(for noteText: String, referenceAudioURL: URL, noteID: UUID) async throws -> URL {
+        await MainActor.run {
+            self.pendingNotes.insert(noteID)
+        }
+        
+        let previousTask = self.latestTask
+        let newTask = Task {
+            // Wait for previous generation to finish before starting this one
+            _ = try? await previousTask?.value
+            return try await self.generateAudioInternal(for: noteText, referenceAudioURL: referenceAudioURL, noteID: noteID)
+        }
+        
+        self.latestTask = newTask
+        
+        do {
+            return try await newTask.value
+        } catch {
+            await MainActor.run {
+                self.pendingNotes.remove(noteID)
+            }
+            throw error
+        }
+    }
+    
+    private func generateAudioInternal(for noteText: String, referenceAudioURL: URL, noteID: UUID) async throws -> URL {
+        await MainActor.run {
+            self.pendingNotes.remove(noteID)
+        }
+        
+        try Task.checkCancellation()
+
         logger.info("Starting audio generation for text of length \(noteText.count)")
         let totalStartTime = CFAbsoluteTimeGetCurrent()
         guard let pipeline = pipeline else {
@@ -64,64 +151,66 @@ class TTSManager {
         }
 
         await MainActor.run {
+            self.activeNoteID = noteID
+            self.generationStartTime = totalStartTime
             self.isGenerating = true
             self.generationProgress = 0.0
             self.errorMessage = nil
+            self.streamPlayer.isFinished = false
         }
 
         defer {
             Task { @MainActor in
-                self.isGenerating = false
-                self.generationProgress = 0.0
+                if self.activeNoteID == noteID {
+                    self.activeNoteID = nil
+                    self.generationStartTime = nil
+                    self.isGenerating = false
+                    self.generationProgress = 0.0
+                }
             }
         }
 
-        // 1. Load & normalise reference audio
-        let audioSamples = try loadAudioSamples(from: referenceAudioURL)
-
-        // 2. Extract speaker embedding
-        guard let embedding = pipeline.extractSpeakerEmbedding(audioSamples: audioSamples) else {
-            throw TTSError.embeddingFailed
-        }
-
+        // 1. Build or retrieve KV Prompt Cache
+        try updatePromptCacheIfNeeded(referenceAudioURL: referenceAudioURL)
+        guard let cache = promptCache else { throw TTSError.embeddingFailed }
         await MainActor.run { self.generationProgress = 0.1 }
 
-        // 3. Chunk text into ≤10-word pieces to keep KV cache within 200 tokens
-        let chunks = chunkText(noteText)
-        let totalChunks = Double(chunks.count)
-
-        // 4. Output file in Documents/AudioNotes/
+        // 2. Output file
         let outputURL = try prepareOutputURL()
-
-        // 5. Generate each chunk sequentially and combine
+        
+        // 3. (Streaming removed per user request)
+        // 4. Generate stream with crossfading enabled
+        logger.info("Beginning streaming generation...")
+        
+        let temp = UserDefaults.standard.object(forKey: "voiceTemperature") as? Float ?? 0.85
+        let chunkSz = UserDefaults.standard.object(forKey: "voiceChunkSize") as? Int ?? 12
+        
         var allSamples: [Float] = []
-        logger.info("Divided text into \(chunks.count) chunks. Beginning sequential generation.")
-        for (index, chunk) in chunks.enumerated() {
-            let chunkStartTime = CFAbsoluteTimeGetCurrent()
-            logger.debug("Generating chunk \(index + 1)/\(chunks.count) (\(chunk.count) characters)")
-            let chunkURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent("chunk_\(index)_\(UUID().uuidString).wav")
-            _ = try await pipeline.generateToFile(
-                text: chunk,
-                speakerEmbedding: embedding,
-                outputURL: chunkURL
-            )
-            let chunkSamples = try loadRawSamples(from: chunkURL)
-            allSamples.append(contentsOf: chunkSamples)
-            try? FileManager.default.removeItem(at: chunkURL)
-
-            let chunkDuration = CFAbsoluteTimeGetCurrent() - chunkStartTime
-            logger.info("Chunk \(index + 1) generated in \(String(format: "%.2f", chunkDuration)) seconds")
-
-            let progress = 0.1 + (Double(index + 1) / totalChunks) * 0.9
+        let audioStream = pipeline.generateStream(
+            text: noteText,
+            speakerEmbedding: cache.speakerEmbedding,
+            temperature: temp,
+            chunkSize: chunkSz
+        )
+        
+        for try await chunk in audioStream {
+            try Task.checkCancellation()
+            allSamples.append(contentsOf: chunk.samples)
+            
+            // Progress estimation based on chunk count (approximate tokens)
+            let approxTotalTokens = Float(TextChunker.estimateTokens(for: noteText))
+            let generatedTokens = Float(chunk.tokenRange.upperBound)
+            let progress = min(0.95, 0.1 + Double(generatedTokens / approxTotalTokens) * 0.85)
             await MainActor.run { self.generationProgress = progress }
         }
+        
+        await MainActor.run { self.generationProgress = 1.0 }
 
-        // 6. Write combined WAV
+        // 5. Write combined WAV
         try writeWAV(samples: allSamples, sampleRate: 24000, to: outputURL)
 
         let totalDuration = CFAbsoluteTimeGetCurrent() - totalStartTime
-        logger.info("Finished audio generation. Total time: \(String(format: "%.2f", totalDuration)) seconds for \(chunks.count) chunks.")
+        logger.info("Finished audio streaming. Total time: \(String(format: "%.2f", totalDuration)) seconds.")
 
         return outputURL
     }

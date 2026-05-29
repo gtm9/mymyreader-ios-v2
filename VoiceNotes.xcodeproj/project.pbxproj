@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2218329C6C16298CEAC16EC2 /* AudioStreamPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF4093BCCE1A6D512C5F37C /* AudioStreamPlayer.swift */; };
 		27D181177CE625BDBDBE5AFD /* Qwen3-TTS-12Hz-0.6B-Base-4bit in Resources */ = {isa = PBXBuildFile; fileRef = 362881E9B7C6FBE2E814411D /* Qwen3-TTS-12Hz-0.6B-Base-4bit */; };
 		3D1E5ACC7DAC6874896D2F7B /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F43EEB6CE4C21CB34779AB3 /* AudioPlayer.swift */; };
 		3D302AA1154BE8FF042BAF5C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25D779CAD8FF4D2A9A21EC5 /* ContentView.swift */; };
@@ -29,6 +30,7 @@
 		AE5783E034421EFE642EF764 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		B25D779CAD8FF4D2A9A21EC5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C62FA867D2523E83D319BA57 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		CEF4093BCCE1A6D512C5F37C /* AudioStreamPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStreamPlayer.swift; sourceTree = "<group>"; };
 		D33386F0D6E51AA0586D546A /* NewNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteView.swift; sourceTree = "<group>"; };
 		E5127A5FBE9A90E11BD1BFE5 /* mlx-swift-qwen3-tts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mlx-swift-qwen3-tts"; path = "../mlx-swift-qwen3-tts"; sourceTree = SOURCE_ROOT; };
 		EC800AAE7139B977AA4F1BE9 /* NoteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailView.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			children = (
 				4F43EEB6CE4C21CB34779AB3 /* AudioPlayer.swift */,
 				AE5783E034421EFE642EF764 /* AudioRecorder.swift */,
+				CEF4093BCCE1A6D512C5F37C /* AudioStreamPlayer.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 			files = (
 				3D1E5ACC7DAC6874896D2F7B /* AudioPlayer.swift in Sources */,
 				42C56E4E9030E9693A0B4513 /* AudioRecorder.swift in Sources */,
+				2218329C6C16298CEAC16EC2 /* AudioStreamPlayer.swift in Sources */,
 				3D302AA1154BE8FF042BAF5C /* ContentView.swift in Sources */,
 				98BCDB79AA0C201F445FA76D /* NewNoteView.swift in Sources */,
 				FB30B1F068F41D0AB0F3B0B8 /* Note.swift in Sources */,

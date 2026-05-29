@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var showingVoiceSetup = false
     @State private var searchText = ""
     @State private var currentTab: AppTab = .home
+    @AppStorage("userName") private var userName = ""
 
     let bgColor = Color(red: 0.98, green: 0.95, blue: 0.93) // Pastel beige/pink
 
@@ -151,8 +152,10 @@ struct ContentView: View {
                     HStack {
                         Text("Hello,")
                             .font(.system(size: 38, weight: .light))
-                        Text("there 👋")
-                            .font(.system(size: 38, weight: .light))
+                        Text(userName.isEmpty ? "there 👋" : "\(userName) 👋")
+                            .font(.system(size: 38, weight: .bold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                     }
                     .foregroundStyle(.black)
                     
@@ -264,6 +267,7 @@ struct ProfileView: View {
     
     @State private var profileImageItem: PhotosPickerItem?
     @State private var profileImage: Image?
+    @AppStorage("userName") private var userName = ""
     
     var body: some View {
         ScrollView {
@@ -301,6 +305,18 @@ struct ProfileView: View {
                         Text("Profile")
                             .font(.system(size: 40, weight: .bold))
                             .foregroundStyle(.black)
+                            
+                        TextField("Your Name", text: $userName)
+                            .font(.system(size: 20, weight: .medium))
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 16)
+                            .background(Color.white.opacity(0.8))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .shadow(color: .black.opacity(0.04), radius: 5)
+                            .submitLabel(.done)
+                            .padding(.top, 4)
+                            .padding(.bottom, 8)
+                            
                         Text("Manage your preferences")
                             .font(.subheadline)
                             .foregroundStyle(.black.opacity(0.6))

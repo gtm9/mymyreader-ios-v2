@@ -8,8 +8,6 @@ struct NoteDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var audioPlayer = AudioPlayer()
-    @State private var isGenerating = false
-    @State private var generationProgress: Double = 0
     @State private var showingVoiceSetup = false
     @State private var showError = false
     @State private var errorText = ""
@@ -19,8 +17,18 @@ struct NoteDetailView: View {
     let bgColor = Color(red: 0.98, green: 0.95, blue: 0.93) // Pastel beige/pink
 
     var referenceVoiceURL: URL? {
-        guard let path = UserDefaults.standard.string(forKey: "referenceVoiceURL") else { return nil }
-        return URL(fileURLWithPath: path)
+        guard let name = UserDefaults.standard.string(forKey: "referenceVoiceURL") else { return nil }
+        let fileName = (name as NSString).lastPathComponent
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return docs.appendingPathComponent(fileName)
+    }
+
+    private var isCurrentlyGenerating: Bool {
+        ttsManager.activeNoteID == note.id
+    }
+
+    private var isQueued: Bool {
+        ttsManager.pendingNotes.contains(note.id)
     }
 
     var body: some View {
@@ -93,6 +101,16 @@ struct NoteDetailView: View {
                     .padding(.bottom, bodyFocused ? 20 : 180) // Space for bottom player bar only when visible
                 }
             }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        bodyFocused = false
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
 
             // Bottom audio bar
             if !bodyFocused {
@@ -115,113 +133,112 @@ struct NoteDetailView: View {
     private var audioBar: some View {
         VStack(spacing: 0) {
             // Generation progress
-            if isGenerating {
+            if isCurrentlyGenerating {
                 VStack(spacing: 8) {
-                    ProgressView(value: generationProgress)
+                    ProgressView(value: ttsManager.generationProgress)
                         .progressViewStyle(.linear)
                         .tint(.indigo)
-                    Text("Generating audio… \(Int(generationProgress * 100))%")
+                    HStack {
+                        Text("Generating audio… \(Int(ttsManager.generationProgress * 100))%")
+                        Spacer()
+                        if let start = ttsManager.generationStartTime {
+                            TimelineView(.periodic(from: .now, by: 0.1)) { _ in
+                                Text(String(format: "%.1fs", CFAbsoluteTimeGetCurrent() - start))
+                                    .monospacedDigit()
+                            }
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .background(.ultraThinMaterial)
+            } else if isQueued {
+                VStack(spacing: 8) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .tint(.indigo)
+                    Text("Queued...")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
                 .background(.ultraThinMaterial)
+            } else if let genTime = note.lastGenerationTime {
+                Text(String(format: "Generated in %.2fs", genTime))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 4)
             }
 
-            // Player controls
-            if let audioURL = note.audioFileURL, FileManager.default.fileExists(atPath: audioURL.path) {
-                playerControls(audioURL: audioURL)
-            }
-
-            // Generate / Voice setup button row
+            // Player controls and Regenerate row
             HStack(spacing: 12) {
+                if let audioURL = note.audioFileURL, FileManager.default.fileExists(atPath: audioURL.path) {
+                    Button {
+                        if audioPlayer.isPlaying {
+                            audioPlayer.pause()
+                        } else {
+                            audioPlayer.play(url: audioURL)
+                        }
+                    } label: {
+                        Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
+                            .font(.system(size: 20))
+                            .foregroundStyle(.black)
+                            .frame(width: 44, height: 44)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                            .shadow(color: .black.opacity(0.1), radius: 5)
+                    }
+                }
+                
                 // Voice status
                 Button {
                     showingVoiceSetup = true
                 } label: {
                     Label(
-                        referenceVoiceURL != nil ? "Change Voice" : "Set Voice",
+                        referenceVoiceURL != nil ? "Voice Set" : "Set Voice",
                         systemImage: referenceVoiceURL != nil ? "waveform.circle.fill" : "waveform.circle"
                     )
                     .font(.subheadline)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .background(Color.white)
+                    .clipShape(Capsule())
                     .foregroundStyle(referenceVoiceURL != nil ? .indigo : .secondary)
+                    .shadow(color: .black.opacity(0.05), radius: 3)
                 }
                 .buttonStyle(.plain)
-
+                
                 Spacer()
 
-                // Generate button
+                // Generate button (Compact)
                 Button {
-                    generateAudio()
-                } label: {
-                    if isGenerating {
-                        ProgressView().tint(.white)
-                    } else {
-                        Label(
-                            note.audioFileName != nil ? "Regenerate" : "Generate Audio",
-                            systemImage: "waveform.and.mic"
-                        )
-                        .font(.subheadline.weight(.semibold))
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(isGenerating || note.body.isEmpty ? Color.secondary : Color.indigo)
-                .foregroundStyle(.white)
-                .clipShape(Capsule())
-                .disabled(isGenerating || note.body.isEmpty || !ttsManager.isModelLoaded)
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
-            .background(.ultraThinMaterial)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 32))
-        .shadow(color: .black.opacity(0.08), radius: 15, y: 8)
-    }
-
-    private func playerControls(audioURL: URL) -> some View {
-        VStack(spacing: 10) {
-            // Progress bar
-            Slider(
-                value: Binding(
-                    get: { audioPlayer.currentTime },
-                    set: { audioPlayer.seek(to: $0) }
-                ),
-                in: 0...(audioPlayer.duration > 0 ? audioPlayer.duration : 1)
-            )
-            .tint(.indigo)
-            .padding(.horizontal, 20)
-
-            HStack {
-                Text(formatTime(audioPlayer.currentTime))
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
-                Spacer()
-
-                // Play / Pause
-                Button {
-                    if audioPlayer.isPlaying {
-                        audioPlayer.pause()
-                    } else {
-                        audioPlayer.play(url: audioURL)
+                    if !isCurrentlyGenerating && !isQueued {
+                        generateAudio()
                     }
                 } label: {
-                    Image(systemName: audioPlayer.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 42))
-                        .foregroundStyle(.indigo)
-                        .symbolRenderingMode(.hierarchical)
+                    Image(systemName: (isCurrentlyGenerating || isQueued) ? "clock.fill" : "arrow.triangle.2.circlepath")
+                        .font(.system(size: 20))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .background((isCurrentlyGenerating || isQueued) ? Color.gray : Color.black)
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.15), radius: 5)
                 }
-
-                Spacer()
-                Text(formatTime(audioPlayer.duration))
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
+                .disabled(isCurrentlyGenerating || isQueued)
+                .buttonStyle(.plain)
             }
-            .padding(.horizontal, 20)
+            .padding(.top, 8)
         }
-        .padding(.vertical, 12)
-        .background(.ultraThinMaterial)
+        .padding(16)
+        .background(Color(red: 0.94, green: 0.9, blue: 0.88))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .shadow(color: .black.opacity(0.08), radius: 15, y: -5)
+        .onDisappear {
+            audioPlayer.stop()
+        }
     }
 
     // MARK: - Actions
@@ -233,14 +250,13 @@ struct NoteDetailView: View {
         }
         guard !note.body.isEmpty else { return }
 
-        isGenerating = true
-        generationProgress = 0
-
         Task {
             do {
+                let startTime = CFAbsoluteTimeGetCurrent()
                 let outputURL = try await ttsManager.generateAudio(
                     for: note.body,
-                    referenceAudioURL: refURL
+                    referenceAudioURL: refURL,
+                    noteID: note.id
                 )
                 // Store just the filename (relative path)
                 let fileName = outputURL.lastPathComponent
@@ -250,13 +266,14 @@ struct NoteDetailView: View {
                 let asset = try AVAudioFile(forReading: outputURL)
                 note.audioDuration = Double(asset.length) / asset.fileFormat.sampleRate
 
+                note.lastGenerationTime = CFAbsoluteTimeGetCurrent() - startTime
                 note.updatedAt = Date()
+                
+                audioPlayer.play(url: outputURL)
             } catch {
                 errorText = error.localizedDescription
                 showError = true
             }
-            isGenerating = false
-            generationProgress = 0
         }
     }
 
@@ -268,7 +285,7 @@ struct NoteDetailView: View {
 }
 
 // Global hack to re-enable swipe-to-go-back when navigation bar is hidden
-extension UINavigationController: UIGestureRecognizerDelegate {
+extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
     override open func viewDidLoad() {
         super.viewDidLoad()
         interactivePopGestureRecognizer?.delegate = self

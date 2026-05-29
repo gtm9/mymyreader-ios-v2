@@ -5,9 +5,20 @@ struct VoiceSetupView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var recorder = AudioRecorder()
     @State private var showFilePicker = false
-    @State private var savedVoiceName: String? = nil
+    @AppStorage("customVoiceName") private var customVoiceName: String = ""
+    @State private var audioPlayer = AudioPlayer()
+    @State private var isEditingName = false
+    
+    // Voice Settings
+    @AppStorage("voiceTemperature") private var voiceTemperature: Double = 0.85
+    @AppStorage("voiceChunkSize") private var voiceChunkSize: Double = 12.0
 
-    var currentVoicePath: String? { UserDefaults.standard.string(forKey: "referenceVoiceURL") }
+    var currentVoiceURL: URL? {
+        guard let name = UserDefaults.standard.string(forKey: "referenceVoiceURL") else { return nil }
+        let fileName = (name as NSString).lastPathComponent
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return docs.appendingPathComponent(fileName)
+    }
     
     let bgColor = Color(red: 0.98, green: 0.95, blue: 0.93) // Pastel beige/pink
 
@@ -48,7 +59,10 @@ struct VoiceSetupView: View {
                         .padding(.top, 16)
 
                         // Current voice status
-                        if let name = savedVoiceName ?? (currentVoicePath.map { URL(fileURLWithPath: $0).lastPathComponent }) {
+                        if let url = currentVoiceURL {
+                            let defaultName = url.lastPathComponent
+                            let displayName = customVoiceName.isEmpty ? defaultName : customVoiceName
+                            
                             HStack(spacing: 12) {
                                 Image(systemName: "checkmark.seal.fill")
                                     .font(.system(size: 24))
@@ -58,13 +72,48 @@ struct VoiceSetupView: View {
                                     Text("Active Voice")
                                         .font(.caption)
                                         .foregroundStyle(.black.opacity(0.6))
-                                    Text(name)
-                                        .font(.subheadline.weight(.semibold))
-                                        .foregroundStyle(.black)
-                                        .lineLimit(1)
-                                        .truncationMode(.middle)
+                                    
+                                    if isEditingName {
+                                        TextField("Voice Name", text: $customVoiceName)
+                                            .font(.subheadline.weight(.semibold))
+                                            .foregroundStyle(.black)
+                                            .textFieldStyle(.roundedBorder)
+                                            .onSubmit {
+                                                isEditingName = false
+                                            }
+                                    } else {
+                                        HStack(spacing: 6) {
+                                            Text(displayName)
+                                                .font(.subheadline.weight(.semibold))
+                                                .foregroundStyle(.black)
+                                                .lineLimit(1)
+                                                .truncationMode(.middle)
+                                            
+                                            Button {
+                                                isEditingName = true
+                                            } label: {
+                                                Image(systemName: "pencil")
+                                                    .font(.system(size: 14))
+                                                    .foregroundStyle(.gray)
+                                            }
+                                        }
+                                    }
                                 }
                                 Spacer()
+                                
+                                Button {
+                                    if audioPlayer.isPlaying {
+                                        audioPlayer.pause()
+                                    } else {
+                                        if let url = currentVoiceURL {
+                                            audioPlayer.play(url: url)
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: audioPlayer.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                        .font(.system(size: 28))
+                                        .foregroundStyle(.indigo)
+                                }
                             }
                             .padding(.horizontal, 20)
                             .padding(.vertical, 16)
@@ -80,9 +129,6 @@ struct VoiceSetupView: View {
                             Button {
                                 if recorder.isRecording {
                                     recorder.stopRecording()
-                                    if let url = recorder.recordedAudioURL {
-                                        saveVoice(url: url)
-                                    }
                                 } else {
                                     recorder.requestPermissionAndRecord()
                                 }
@@ -153,6 +199,53 @@ struct VoiceSetupView: View {
                             .buttonStyle(.plain)
                         }
                         .padding(.horizontal, 24)
+                        
+                        // Settings Section
+                        VStack(spacing: 16) {
+                            Text("Advanced Settings")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Text("Expressiveness")
+                                        .font(.system(size: 16, weight: .medium))
+                                    Spacer()
+                                    Text(String(format: "%.2f", voiceTemperature))
+                                        .font(.caption.monospacedDigit())
+                                        .foregroundStyle(.secondary)
+                                }
+                                Slider(value: $voiceTemperature, in: 0.0...1.0, step: 0.05)
+                                    .tint(.indigo)
+                                Text("Higher values make the voice more emotional but less stable.")
+                                    .font(.caption)
+                                    .foregroundStyle(.black.opacity(0.6))
+                            }
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Text("Streaming Chunk Size")
+                                        .font(.system(size: 16, weight: .medium))
+                                    Spacer()
+                                    Text("\(Int(voiceChunkSize)) tokens")
+                                        .font(.caption.monospacedDigit())
+                                        .foregroundStyle(.secondary)
+                                }
+                                Slider(value: $voiceChunkSize, in: 4...24, step: 1)
+                                    .tint(.indigo)
+                                Text("Lower values decrease latency but increase CPU usage.")
+                                    .font(.caption)
+                                    .foregroundStyle(.black.opacity(0.6))
+                            }
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                        .padding(.horizontal, 24)
 
                         Spacer(minLength: 40)
                     }
@@ -173,12 +266,17 @@ struct VoiceSetupView: View {
                     print("File picker error: \(error)")
                 }
             }
+            .onChange(of: recorder.recordedAudioURL) { _, newURL in
+                if let url = newURL {
+                    saveVoice(url: url)
+                }
+            }
         }
     }
 
     private func saveVoice(url: URL) {
-        UserDefaults.standard.set(url.path, forKey: "referenceVoiceURL")
-        savedVoiceName = url.lastPathComponent
+        UserDefaults.standard.set(url.lastPathComponent, forKey: "referenceVoiceURL")
+        customVoiceName = url.lastPathComponent
     }
 
     private func copyAudioToDocs(url: URL) -> URL? {

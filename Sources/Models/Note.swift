@@ -11,6 +11,7 @@ final class Note {
     /// Relative filename in the app's Documents/AudioNotes/ directory
     var audioFileName: String?
     var audioDuration: Double?
+    var lastGenerationTime: Double?
 
     init(title: String = "", body: String = "") {
         self.id = UUID()
