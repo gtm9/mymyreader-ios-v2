@@ -13,6 +13,7 @@
 		3D302AA1154BE8FF042BAF5C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25D779CAD8FF4D2A9A21EC5 /* ContentView.swift */; };
 		42C56E4E9030E9693A0B4513 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5783E034421EFE642EF764 /* AudioRecorder.swift */; };
 		42E8F94471F530AAB2F49891 /* VoiceSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3CFCBCA8F91C8642E7FE0C /* VoiceSetupView.swift */; };
+		4A4865E36F15266751D5BD4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05D655CC7CBD254B8E9C2653 /* Assets.xcassets */; };
 		5BF4286E49738CBAAF88CB25 /* TTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F313C092FDA38CC18B5ADC26 /* TTSManager.swift */; };
 		98BCDB79AA0C201F445FA76D /* NewNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33386F0D6E51AA0586D546A /* NewNoteView.swift */; };
 		A0EABA33E526B06D53775FCA /* NoteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC800AAE7139B977AA4F1BE9 /* NoteDetailView.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		04F38931381C7431BC09A38A /* VoiceNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceNotesApp.swift; sourceTree = "<group>"; };
+		05D655CC7CBD254B8E9C2653 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07E893385CD0674B446CD913 /* VoiceNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		362881E9B7C6FBE2E814411D /* Qwen3-TTS-12Hz-0.6B-Base-4bit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Qwen3-TTS-12Hz-0.6B-Base-4bit"; path = "Models/Qwen3-TTS-12Hz-0.6B-Base-4bit"; sourceTree = SOURCE_ROOT; };
 		4C3CFCBCA8F91C8642E7FE0C /* VoiceSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceSetupView.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 		8203C5E80349CFC52E178020 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				05D655CC7CBD254B8E9C2653 /* Assets.xcassets */,
 				04F38931381C7431BC09A38A /* VoiceNotesApp.swift */,
 				7C025A8B2BA5FA7FAD9B705B /* Audio */,
 				BD06774EDF7588A4A01EA52E /* Models */,
@@ -183,6 +186,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A4865E36F15266751D5BD4A /* Assets.xcassets in Resources */,
 				27D181177CE625BDBDBE5AFD /* Qwen3-TTS-12Hz-0.6B-Base-4bit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

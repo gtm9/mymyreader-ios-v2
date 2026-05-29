@@ -6,6 +6,7 @@ struct VoiceSetupView: View {
     @State private var recorder = AudioRecorder()
     @State private var showFilePicker = false
     @AppStorage("customVoiceName") private var customVoiceName: String = ""
+    @AppStorage("hasConsentedToVoiceCloning") private var hasConsented: Bool = false
     @State private var audioPlayer = AudioPlayer()
     @State private var isEditingName = false
     
@@ -123,6 +124,19 @@ struct VoiceSetupView: View {
                             .padding(.horizontal, 24)
                         }
 
+                        // Consent Checkbox
+                        Toggle(isOn: $hasConsented) {
+                            Text("I confirm that I am cloning my own voice or have explicit permission to clone this voice. I understand the voice will be processed entirely locally on this device.")
+                                .font(.caption)
+                                .foregroundStyle(.black.opacity(0.8))
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: .indigo))
+                        .padding()
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .shadow(color: .black.opacity(0.04), radius: 10, y: 5)
+                        .padding(.horizontal, 24)
+
                         // Options
                         VStack(spacing: 16) {
                             // Record Button
@@ -163,6 +177,8 @@ struct VoiceSetupView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 24))
                             }
                             .buttonStyle(.plain)
+                            .disabled(!hasConsented)
+                            .opacity(hasConsented ? 1.0 : 0.5)
 
                             if let error = recorder.errorMessage {
                                 Text(error)
@@ -197,6 +213,8 @@ struct VoiceSetupView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 24))
                             }
                             .buttonStyle(.plain)
+                            .disabled(!hasConsented)
+                            .opacity(hasConsented ? 1.0 : 0.5)
                         }
                         .padding(.horizontal, 24)
                         

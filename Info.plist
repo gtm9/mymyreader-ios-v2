@@ -19,7 +19,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>VoiceNotes needs microphone access to record a reference voice for audio playback of your notes.</string>
+	<string>VoiceNotes requires microphone access to record your acoustic profile so the AI can securely clone your voice locally on your device.</string>
 	<key>UILaunchStoryboardName</key>
 	<string></string>
 </dict>
