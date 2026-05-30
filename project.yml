@@ -1,6 +1,6 @@
 name: VoiceNotes
 options:
-  bundleIdPrefix: com.example
+  bundleIdPrefix: com.remargatech
 packages:
   Qwen3TTS:
     path: ../mlx-swift-qwen3-tts

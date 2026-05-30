@@ -1,0 +1,45 @@
+trigger:
+  branches:
+    include:
+      - master
+      - main
+
+pr:
+  branches:
+    include:
+      - master
+      - main
+
+pool:
+  vmImage: 'macOS-latest'
+
+variables:
+  - name: scheme
+    value: 'VoiceNotes'
+  - name: sdk
+    value: 'iphoneos'
+
+steps:
+  - checkout: self
+    submodules: true
+
+  - script: |
+      brew install xcodegen
+    displayName: 'Install Dependencies (XcodeGen)'
+
+  - script: |
+      xcodegen generate
+    displayName: 'Generate Xcode Project'
+
+  - task: Xcode@5
+    displayName: 'Build and Test App'
+    inputs:
+      actions: 'build test'
+      configuration: 'Debug'
+      sdk: 'iphonesimulator'
+      xcWorkspacePath: 'VoiceNotes.xcodeproj'
+      scheme: '$(scheme)'
+      destinationPlatformOption: 'iOS'
+      destinationSimulators: 'iPhone 15'
+      useXcpretty: true
+      publishJUnitResults: true

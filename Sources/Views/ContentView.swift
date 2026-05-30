@@ -265,6 +265,8 @@ struct ProfileView: View {
     @Binding var showingVoiceSetup: Bool
     let referenceVoiceSet: Bool
     
+    @State private var showingAboutPage = false
+    
     @State private var profileImageItem: PhotosPickerItem?
     @State private var profileImage: Image?
     @AppStorage("userName") private var userName = ""
@@ -378,6 +380,38 @@ struct ProfileView: View {
                         .shadow(color: .black.opacity(0.04), radius: 15, x: 0, y: 8)
                     }
                     .buttonStyle(.plain)
+                    
+                    // About App
+                    Button {
+                        showingAboutPage = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "info.circle.fill")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.indigo)
+                                .frame(width: 32)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("About VoiceNotes")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundStyle(.black)
+                                Text("Company info, Support, and Privacy")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(Color.black.opacity(0.6))
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(Color.black.opacity(0.3))
+                        }
+                        .padding(24)
+                        .background(Color.white.opacity(0.9))
+                        .clipShape(RoundedRectangle(cornerRadius: 32))
+                        .shadow(color: .black.opacity(0.04), radius: 15, x: 0, y: 8)
+                    }
+                    .buttonStyle(.plain)
+                    .sheet(isPresented: $showingAboutPage) {
+                        AboutView()
+                    }
                 }
                 .padding(.horizontal, 24)
                 
@@ -437,5 +471,108 @@ struct NoteRowView: View {
         .background(bgColor)
         .clipShape(RoundedRectangle(cornerRadius: 32))
         .shadow(color: .black.opacity(0.04), radius: 15, x: 0, y: 8)
+    }
+}
+
+// MARK: - About View
+
+struct AboutView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    let bgColor = Color(red: 0.98, green: 0.95, blue: 0.93) // Pastel beige/pink
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            bgColor.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                // Top Bar
+                HStack {
+                    Spacer()
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 28))
+                            .foregroundStyle(.black.opacity(0.8))
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 16)
+                
+                ScrollView {
+                    VStack(spacing: 32) {
+                        Image(systemName: "waveform.circle.fill")
+                            .font(.system(size: 80))
+                            .foregroundStyle(.indigo)
+                            .padding(.top, 20)
+                            
+                        VStack(spacing: 8) {
+                            Text("VoiceNotes")
+                                .font(.system(size: 32, weight: .bold))
+                            Text("Version 1.0.0")
+                                .font(.system(size: 16))
+                                .foregroundStyle(.gray)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Company Information")
+                                .font(.system(size: 20, weight: .semibold))
+                                .padding(.bottom, 4)
+                                
+                            InfoRow(title: "Developer", value: "Remarga Tech Private Limited")
+                            
+                            Link(destination: URL(string: "https://remarga.com")!) {
+                                InfoRow(title: "Website", value: "remarga.com", isLink: true)
+                            }
+                            
+                            Link(destination: URL(string: "https://remarga.com/support")!) {
+                                InfoRow(title: "Support", value: "Contact Us", isLink: true)
+                            }
+                            
+                            Link(destination: URL(string: "https://remarga.com/privacy")!) {
+                                InfoRow(title: "Privacy Policy", value: "Read Policy", isLink: true)
+                            }
+                        }
+                        .padding(24)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .shadow(color: .black.opacity(0.04), radius: 10, y: 5)
+                        .padding(.horizontal, 24)
+                        
+                        Text("© 2026 Remarga Tech Private Limited. All rights reserved.")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                            .padding(.top, 20)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct InfoRow: View {
+    let title: String
+    let value: String
+    var isLink: Bool = false
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 16))
+                .foregroundStyle(.black)
+            Spacer()
+            Text(value)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(isLink ? .indigo : .black.opacity(0.7))
+            if isLink {
+                Image(systemName: "arrow.up.right")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(.indigo)
+            }
+        }
     }
 }
