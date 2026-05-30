@@ -33,7 +33,7 @@ class AudioRecorder: NSObject {
         do {
             let session = AVAudioSession.sharedInstance()
             // Use .default mode to enable Apple's AGC and noise suppression
-            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP])
+            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
             try session.setActive(true)
 
             let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]

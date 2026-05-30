@@ -38,6 +38,13 @@ class TTSManager {
     private var lifecycleObserver: Any?
 
     init() {
+        // Bypass MLX Metal initialization on CI runners and during tests
+        let isTesting = ProcessInfo.processInfo.arguments.contains("-UITest") || ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+        if isTesting {
+            self.errorMessage = "Mocked TTS for UI Tests"
+            return
+        }
+
         // Enforce strict memory limits to survive iOS Jetsam
         MLX.Memory.memoryLimit = 1250 * 1024 * 1024  // 1.25 GB
         MLX.Memory.cacheLimit = 16 * 1024 * 1024       // 16 MB

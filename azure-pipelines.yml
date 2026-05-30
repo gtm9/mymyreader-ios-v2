@@ -24,10 +24,15 @@ steps:
     submodules: true
 
   - script: |
+      rm -f Models
       brew install xcodegen
-    displayName: 'Install Dependencies (XcodeGen)'
+      pip3 install -U "huggingface_hub[cli]" --break-system-packages
+      mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+      hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+    displayName: 'Install Dependencies and Download MLX Model'
 
   - script: |
+      rm -rf VoiceNotes.xcodeproj
       xcodegen generate
     displayName: 'Generate Xcode Project'
 
@@ -40,6 +45,6 @@ steps:
       xcWorkspacePath: 'VoiceNotes.xcodeproj'
       scheme: '$(scheme)'
       destinationPlatformOption: 'iOS'
-      destinationSimulators: 'iPhone 15'
+      destinationSimulators: 'iPhone 16'
       useXcpretty: true
       publishJUnitResults: true

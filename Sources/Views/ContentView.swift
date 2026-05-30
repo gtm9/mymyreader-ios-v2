@@ -93,6 +93,7 @@ struct ContentView: View {
                                 .background(currentTab == .home ? Color.white : Color.clear)
                                 .clipShape(Circle())
                         }
+                        .accessibilityIdentifier("Home Tab")
                         
                         Button {
                             currentTab = .profile
@@ -104,6 +105,7 @@ struct ContentView: View {
                                 .background(currentTab == .profile ? Color.white : Color.clear)
                                 .clipShape(Circle())
                         }
+                        .accessibilityIdentifier("Profile Tab")
                     }
                     .padding(6)
                     .background(Color.black)
@@ -122,6 +124,7 @@ struct ContentView: View {
                             .background(Color.black)
                             .clipShape(Circle())
                     }
+                    .accessibilityIdentifier("Create Note FAB")
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 24)
@@ -406,9 +409,9 @@ struct ProfileView: View {
                         .padding(24)
                         .background(Color.white.opacity(0.9))
                         .clipShape(RoundedRectangle(cornerRadius: 32))
-                        .shadow(color: .black.opacity(0.04), radius: 15, x: 0, y: 8)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("About VoiceNotes")
                     .sheet(isPresented: $showingAboutPage) {
                         AboutView()
                     }
@@ -496,6 +499,7 @@ struct AboutView: View {
                             .font(.system(size: 28))
                             .foregroundStyle(.black.opacity(0.8))
                     }
+                    .accessibilityIdentifier("Close")
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 24)

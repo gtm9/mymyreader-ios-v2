@@ -39,6 +39,7 @@ struct NewNoteView: View {
                                 .font(.system(size: 28))
                                 .foregroundStyle(.black)
                         }
+                        .accessibilityIdentifier("Save Note")
                     }
                 }
                 .padding(.horizontal, 24)
