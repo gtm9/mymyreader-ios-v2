@@ -10,41 +10,105 @@ pr:
       - master
       - main
 
-pool:
-  vmImage: 'macOS-latest'
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and Test'
+  jobs:
+  - job: Test
+    pool:
+      vmImage: 'macOS-latest'
+    variables:
+      scheme: 'VoiceNotes'
+    steps:
+      - checkout: self
+        submodules: true
 
-variables:
-  - name: scheme
-    value: 'VoiceNotes'
-  - name: sdk
-    value: 'iphoneos'
+      - script: |
+          rm -f Models
+          brew install xcodegen
+          pip3 install -U "huggingface_hub[cli]" --break-system-packages
+          mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+          hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        displayName: 'Install Dependencies and Download MLX Model'
 
-steps:
-  - checkout: self
-    submodules: true
+      - script: |
+          rm -rf VoiceNotes.xcodeproj
+          xcodegen generate
+        displayName: 'Generate Xcode Project'
 
-  - script: |
-      rm -f Models
-      brew install xcodegen
-      pip3 install -U "huggingface_hub[cli]" --break-system-packages
-      mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
-      hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
-    displayName: 'Install Dependencies and Download MLX Model'
+      - task: Xcode@5
+        displayName: 'Build and Test App'
+        inputs:
+          actions: 'build test'
+          configuration: 'Debug'
+          sdk: 'iphonesimulator'
+          xcWorkspacePath: 'VoiceNotes.xcodeproj'
+          scheme: '$(scheme)'
+          destinationPlatformOption: 'iOS'
+          destinationSimulators: 'iPhone 16'
+          useXcpretty: true
+          publishJUnitResults: true
 
-  - script: |
-      rm -rf VoiceNotes.xcodeproj
-      xcodegen generate
-    displayName: 'Generate Xcode Project'
+- stage: DeployToTestFlight
+  displayName: 'Deploy to TestFlight'
+  dependsOn: BuildAndTest
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  jobs:
+  - job: ArchiveAndDeploy
+    pool:
+      vmImage: 'macOS-latest'
+    variables:
+      scheme: 'VoiceNotes'
+    steps:
+      - checkout: self
+        submodules: true
 
-  - task: Xcode@5
-    displayName: 'Build and Test App'
-    inputs:
-      actions: 'build test'
-      configuration: 'Debug'
-      sdk: 'iphonesimulator'
-      xcWorkspacePath: 'VoiceNotes.xcodeproj'
-      scheme: '$(scheme)'
-      destinationPlatformOption: 'iOS'
-      destinationSimulators: 'iPhone 16'
-      useXcpretty: true
-      publishJUnitResults: true
+      - script: |
+          rm -f Models
+          brew install xcodegen
+          pip3 install -U "huggingface_hub[cli]" --break-system-packages
+          mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+          hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        displayName: 'Install Dependencies and Download MLX Model'
+
+      - script: |
+          rm -rf VoiceNotes.xcodeproj
+          xcodegen generate
+        displayName: 'Generate Xcode Project'
+
+      - task: InstallAppleCertificate@2
+        displayName: 'Install Apple Certificate'
+        inputs:
+          certSecureFile: '$(appleCertificate)'
+          certPwd: '$(appleCertificatePassword)'
+          keychain: 'temp'
+
+      - task: InstallAppleProvisioningProfile@1
+        displayName: 'Install Provisioning Profile'
+        inputs:
+          provisioningProfileLocation: 'secureFiles'
+          provProfileSecureFile: '$(appleProvisioningProfile)'
+
+      - task: Xcode@5
+        displayName: 'Archive App'
+        inputs:
+          actions: 'archive'
+          configuration: 'Release'
+          sdk: 'iphoneos'
+          xcWorkspacePath: 'VoiceNotes.xcodeproj'
+          scheme: '$(scheme)'
+          packageApp: true
+          exportPath: '$(build.artifactStagingDirectory)/output'
+          exportOptions: 'auto'
+          signingOption: 'manual'
+          signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+          provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+
+      - task: AppStoreRelease@1
+        displayName: 'Upload to TestFlight'
+        inputs:
+          serviceEndpoint: 'AppleAppStoreConnection'
+          appIdentifier: 'com.remargatech.VoiceNotes'
+          appType: 'iOS'
+          ipaPath: '$(build.artifactStagingDirectory)/output/*.ipa'
+          releaseTrack: 'TestFlight'
