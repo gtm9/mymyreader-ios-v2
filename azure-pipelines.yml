@@ -100,6 +100,19 @@ stages:
         displayName: 'Download MLX Model'
         condition: ne(variables.MODEL_CACHE_RESTORED, 'true')
 
+      - task: InstallAppleCertificate@2
+        displayName: 'Install Apple Certificate'
+        inputs:
+          certSecureFile: '$(appleCertificate)'
+          certPwd: '$(appleCertificatePassword)'
+          keychain: 'temp'
+
+      - task: InstallAppleProvisioningProfile@1
+        displayName: 'Install Provisioning Profile'
+        inputs:
+          provisioningProfileLocation: 'secureFiles'
+          provProfileSecureFile: '$(appleProvisioningProfile)'
+
       - script: |
           cat <<EOF > ExportOptions.plist
           <?xml version="1.0" encoding="UTF-8"?>
@@ -107,7 +120,7 @@ stages:
           <plist version="1.0">
           <dict>
               <key>method</key>
-              <string>app-store</string>
+              <string>app-store-connect</string>
               <key>teamID</key>
               <string>W5YR8QWKH6</string>
               <key>provisioningProfiles</key>
@@ -127,19 +140,6 @@ stages:
           rm -rf VoiceNotes.xcodeproj
           xcodegen generate
         displayName: 'Generate Xcode Project and Export Options'
-
-      - task: InstallAppleCertificate@2
-        displayName: 'Install Apple Certificate'
-        inputs:
-          certSecureFile: '$(appleCertificate)'
-          certPwd: '$(appleCertificatePassword)'
-          keychain: 'temp'
-
-      - task: InstallAppleProvisioningProfile@1
-        displayName: 'Install Provisioning Profile'
-        inputs:
-          provisioningProfileLocation: 'secureFiles'
-          provProfileSecureFile: '$(appleProvisioningProfile)'
 
       - task: Xcode@5
         displayName: 'Archive App'
