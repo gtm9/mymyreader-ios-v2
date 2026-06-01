@@ -72,10 +72,12 @@ stages:
         displayName: 'Install Dependencies and Download MLX Model'
 
       - script: |
+          sed -i '' '/CURRENT_PROJECT_VERSION: 1/a\
+                CODE_SIGN_STYLE: "Manual"\
+                CODE_SIGN_IDENTITY: "$(APPLE_CERTIFICATE_SIGNING_IDENTITY)"\
+                PROVISIONING_PROFILE_SPECIFIER: "$(APPLE_PROV_PROFILE_UUID)"\
+          ' project.yml
           rm -rf VoiceNotes.xcodeproj
-          export CI_CODE_SIGN_STYLE="Manual"
-          export CI_CODE_SIGN_IDENTITY="$(APPLE_CERTIFICATE_SIGNING_IDENTITY)"
-          export CI_PROVISIONING_PROFILE_UUID="$(APPLE_PROV_PROFILE_UUID)"
           xcodegen generate
         displayName: 'Generate Xcode Project'
 
