@@ -23,6 +23,11 @@ stages:
       - checkout: self
         submodules: true
 
+      - script: |
+          rm -f Models
+          mkdir -p $(System.DefaultWorkingDirectory)/Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        displayName: 'Create Model Directory for Cache'
+
       - task: Cache@2
         displayName: 'Cache MLX Model'
         inputs:
@@ -31,15 +36,9 @@ stages:
           cacheHitVar: 'MODEL_CACHE_RESTORED'
 
       - script: |
-          rm -f Models
           brew install xcodegen
           pip3 install -U "huggingface_hub[cli]" --break-system-packages
         displayName: 'Install Dependencies'
-
-      - script: |
-          mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
-        displayName: 'Prepare Model Directory'
-        condition: ne(variables.MODEL_CACHE_RESTORED, 'true')
 
       - script: |
           hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
@@ -60,7 +59,7 @@ stages:
           xcWorkspacePath: 'VoiceNotes.xcodeproj'
           scheme: '$(scheme)'
           destinationPlatformOption: 'iOS'
-          destinationSimulators: 'iPhone 16'
+          destinationSimulators: 'iPhone 17'
           useXcpretty: false
           args: '-only-testing:VoiceNotesTests'
           publishJUnitResults: true
@@ -79,6 +78,11 @@ stages:
       - checkout: self
         submodules: true
 
+      - script: |
+          rm -f Models
+          mkdir -p $(System.DefaultWorkingDirectory)/Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        displayName: 'Create Model Directory for Cache'
+
       - task: Cache@2
         displayName: 'Cache MLX Model'
         inputs:
@@ -87,15 +91,9 @@ stages:
           cacheHitVar: 'MODEL_CACHE_RESTORED'
 
       - script: |
-          rm -f Models
           brew install xcodegen
           pip3 install -U "huggingface_hub[cli]" --break-system-packages
         displayName: 'Install Dependencies'
-
-      - script: |
-          mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
-        displayName: 'Prepare Model Directory'
-        condition: ne(variables.MODEL_CACHE_RESTORED, 'true')
 
       - script: |
           hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
