@@ -73,6 +73,9 @@ stages:
 
       - script: |
           rm -rf VoiceNotes.xcodeproj
+          export CI_CODE_SIGN_STYLE="Manual"
+          export CI_CODE_SIGN_IDENTITY="$(APPLE_CERTIFICATE_SIGNING_IDENTITY)"
+          export CI_PROVISIONING_PROFILE_UUID="$(APPLE_PROV_PROFILE_UUID)"
           xcodegen generate
         displayName: 'Generate Xcode Project'
 
@@ -101,10 +104,6 @@ stages:
           exportPath: '$(build.artifactStagingDirectory)/output'
           exportOptions: 'auto'
           useXcpretty: false
-          args: 'CODE_SIGN_STYLE=Manual'
-          signingOption: 'manual'
-          signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-          provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
 
       - task: AppStoreRelease@1
         displayName: 'Upload to TestFlight'
