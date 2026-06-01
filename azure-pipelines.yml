@@ -23,13 +23,28 @@ stages:
       - checkout: self
         submodules: true
 
+      - task: Cache@2
+        displayName: 'Cache MLX Model'
+        inputs:
+          key: '"qwen3-tts" | "$(Agent.OS)"'
+          path: '$(System.DefaultWorkingDirectory)/Models/Qwen3-TTS-12Hz-0.6B-Base-4bit'
+          cacheHitVar: 'MODEL_CACHE_RESTORED'
+
       - script: |
           rm -f Models
           brew install xcodegen
           pip3 install -U "huggingface_hub[cli]" --break-system-packages
+        displayName: 'Install Dependencies'
+
+      - script: |
           mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        displayName: 'Prepare Model Directory'
+        condition: ne(variables.MODEL_CACHE_RESTORED, 'true')
+
+      - script: |
           hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
-        displayName: 'Install Dependencies and Download MLX Model'
+        displayName: 'Download MLX Model'
+        condition: ne(variables.MODEL_CACHE_RESTORED, 'true')
 
       - script: |
           rm -rf VoiceNotes.xcodeproj
@@ -47,6 +62,7 @@ stages:
           destinationPlatformOption: 'iOS'
           destinationSimulators: 'iPhone 16'
           useXcpretty: false
+          args: '-only-testing:VoiceNotesTests'
           publishJUnitResults: true
 
 - stage: DeployToTestFlight
@@ -63,23 +79,56 @@ stages:
       - checkout: self
         submodules: true
 
+      - task: Cache@2
+        displayName: 'Cache MLX Model'
+        inputs:
+          key: '"qwen3-tts" | "$(Agent.OS)"'
+          path: '$(System.DefaultWorkingDirectory)/Models/Qwen3-TTS-12Hz-0.6B-Base-4bit'
+          cacheHitVar: 'MODEL_CACHE_RESTORED'
+
       - script: |
           rm -f Models
           brew install xcodegen
           pip3 install -U "huggingface_hub[cli]" --break-system-packages
-          mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
-          hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
-        displayName: 'Install Dependencies and Download MLX Model'
+        displayName: 'Install Dependencies'
 
       - script: |
+          mkdir -p Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        displayName: 'Prepare Model Directory'
+        condition: ne(variables.MODEL_CACHE_RESTORED, 'true')
+
+      - script: |
+          hf download mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit --local-dir Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
+        displayName: 'Download MLX Model'
+        condition: ne(variables.MODEL_CACHE_RESTORED, 'true')
+
+      - script: |
+          cat <<EOF > ExportOptions.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>teamID</key>
+              <string>W5YR8QWKH6</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.remargatech.VoiceNotes</key>
+                  <string>$(APPLE_PROV_PROFILE_UUID)</string>
+              </dict>
+          </dict>
+          </plist>
+          EOF
           sed -i '' '/CURRENT_PROJECT_VERSION: 1/a\
                 CODE_SIGN_STYLE: "Manual"\
                 CODE_SIGN_IDENTITY: "$(APPLE_CERTIFICATE_SIGNING_IDENTITY)"\
                 PROVISIONING_PROFILE_SPECIFIER: "$(APPLE_PROV_PROFILE_UUID)"\
+                DEVELOPMENT_TEAM: "W5YR8QWKH6"\
           ' project.yml
           rm -rf VoiceNotes.xcodeproj
           xcodegen generate
-        displayName: 'Generate Xcode Project'
+        displayName: 'Generate Xcode Project and Export Options'
 
       - task: InstallAppleCertificate@2
         displayName: 'Install Apple Certificate'
@@ -104,7 +153,8 @@ stages:
           scheme: '$(scheme)'
           packageApp: true
           exportPath: '$(build.artifactStagingDirectory)/output'
-          exportOptions: 'auto'
+          exportOptions: 'plist'
+          exportOptionsPlist: 'ExportOptions.plist'
           useXcpretty: false
 
       - task: AppStoreRelease@1
