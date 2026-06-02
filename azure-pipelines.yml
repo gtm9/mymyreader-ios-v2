@@ -82,11 +82,13 @@ jobs:
         EXTRACTED_UUID=$(/usr/libexec/PlistBuddy -c 'Print UUID' /dev/stdin <<< $(security cms -D -i "$PROFILE_FILE"))
         EXTRACTED_TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print TeamIdentifier:0' /dev/stdin <<< $(security cms -D -i "$PROFILE_FILE"))
         EXTRACTED_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print Entitlements:application-identifier' /dev/stdin <<< $(security cms -D -i "$PROFILE_FILE") | sed "s/^${EXTRACTED_TEAM_ID}\.//")
+        EXTRACTED_PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print Name' /dev/stdin <<< $(security cms -D -i "$PROFILE_FILE"))
 
         echo "--- Extracted from Profile ---"
         echo "UUID: $EXTRACTED_UUID"
         echo "Team ID: $EXTRACTED_TEAM_ID"
         echo "Bundle ID: $EXTRACTED_BUNDLE_ID"
+        echo "Profile Name: $EXTRACTED_PROFILE_NAME"
 
         cat <<PLIST_EOF > ExportOptions.plist
         <?xml version="1.0" encoding="UTF-8"?>
@@ -100,7 +102,7 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
                 <key>$EXTRACTED_BUNDLE_ID</key>
-                <string>$EXTRACTED_UUID</string>
+                <string>$EXTRACTED_PROFILE_NAME</string>
             </dict>
         </dict>
         </plist>
