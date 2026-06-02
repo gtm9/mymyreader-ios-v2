@@ -126,20 +126,23 @@ stages:
               <key>provisioningProfiles</key>
               <dict>
                   <key>com.remargatech.VoiceNotes</key>
-                  <string>$(APPLE_PROV_PROFILE_UUID)</string>
+                  <string>${APPLE_PROV_PROFILE_UUID}</string>
               </dict>
           </dict>
           </plist>
           EOF
-          sed -i '' '/CURRENT_PROJECT_VERSION: 1/a\
-                CODE_SIGN_STYLE: "Manual"\
-                CODE_SIGN_IDENTITY: "$(APPLE_CERTIFICATE_SIGNING_IDENTITY)"\
-                PROVISIONING_PROFILE_SPECIFIER: "$(APPLE_PROV_PROFILE_UUID)"\
-                DEVELOPMENT_TEAM: "W5YR8QWKH6"\
-          ' project.yml
+          sed -i '' "/CURRENT_PROJECT_VERSION: 1/a\\
+                CODE_SIGN_STYLE: \"Manual\"\\
+                CODE_SIGN_IDENTITY: \"${APPLE_CERTIFICATE_SIGNING_IDENTITY}\"\\
+                PROVISIONING_PROFILE_SPECIFIER: \"${APPLE_PROV_PROFILE_UUID}\"\\
+                DEVELOPMENT_TEAM: \"W5YR8QWKH6\"\\
+          " project.yml
           rm -rf VoiceNotes.xcodeproj
           xcodegen generate
         displayName: 'Generate Xcode Project and Export Options'
+        env:
+          APPLE_CERTIFICATE_SIGNING_IDENTITY: $(APPLE_CERTIFICATE_SIGNING_IDENTITY)
+          APPLE_PROV_PROFILE_UUID: $(APPLE_PROV_PROFILE_UUID)
 
       - task: Xcode@5
         displayName: 'Archive App'
