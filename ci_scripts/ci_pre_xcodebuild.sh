@@ -11,6 +11,11 @@ python3 -m pip install -U huggingface_hub
 
 # Create Models directory if it doesn't exist
 # Note: ci_scripts run from the ci_scripts directory, so we go up one level
+# If Models is a symlink (as checked in via git), we must remove it first on the CI server
+if [ -L "../Models" ]; then
+    echo "Removing local Models symlink to create actual directory..."
+    rm "../Models"
+fi
 mkdir -p ../Models/Qwen3-TTS-12Hz-0.6B-Base-4bit
 
 # Download the model using python3 script to completely bypass any CLI errors
