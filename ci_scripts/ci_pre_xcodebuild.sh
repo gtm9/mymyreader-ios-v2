@@ -7,7 +7,7 @@ echo "========================================"
 
 # Install HuggingFace Hub python package
 echo "Installing huggingface_hub..."
-python3 -m pip install -U huggingface_hub --break-system-packages
+python3 -m pip install -U huggingface_hub
 
 # Create Models directory if it doesn't exist
 # Note: ci_scripts run from the ci_scripts directory, so we go up one level
