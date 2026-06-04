@@ -1,0 +1,623 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06A1E8BE9A45D698671D66E9 /* NoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DB0DD89C35B7C135CD7BB0 /* NoteTests.swift */; };
+		0E6FFF3143D6343D63E71441 /* VoiceNotesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068846EB9355EC71426503AF /* VoiceNotesUITests.swift */; };
+		2218329C6C16298CEAC16EC2 /* AudioStreamPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF4093BCCE1A6D512C5F37C /* AudioStreamPlayer.swift */; };
+		27D181177CE625BDBDBE5AFD /* Qwen3-TTS-12Hz-0.6B-Base-4bit in Resources */ = {isa = PBXBuildFile; fileRef = 362881E9B7C6FBE2E814411D /* Qwen3-TTS-12Hz-0.6B-Base-4bit */; };
+		3D1E5ACC7DAC6874896D2F7B /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F43EEB6CE4C21CB34779AB3 /* AudioPlayer.swift */; };
+		3D302AA1154BE8FF042BAF5C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25D779CAD8FF4D2A9A21EC5 /* ContentView.swift */; };
+		42C56E4E9030E9693A0B4513 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5783E034421EFE642EF764 /* AudioRecorder.swift */; };
+		42E8F94471F530AAB2F49891 /* VoiceSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3CFCBCA8F91C8642E7FE0C /* VoiceSetupView.swift */; };
+		4A4865E36F15266751D5BD4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05D655CC7CBD254B8E9C2653 /* Assets.xcassets */; };
+		5BF4286E49738CBAAF88CB25 /* TTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F313C092FDA38CC18B5ADC26 /* TTSManager.swift */; };
+		5C12997897AAC733E5FC8580 /* TTSManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8485A79229F1E3AF44A39089 /* TTSManagerTests.swift */; };
+		98BCDB79AA0C201F445FA76D /* NewNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33386F0D6E51AA0586D546A /* NewNoteView.swift */; };
+		A0EABA33E526B06D53775FCA /* NoteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC800AAE7139B977AA4F1BE9 /* NoteDetailView.swift */; };
+		A535BC8503C037A1DDEB2066 /* Qwen3TTS in Frameworks */ = {isa = PBXBuildFile; productRef = 92B7EB74E9315C046BA4EA84 /* Qwen3TTS */; };
+		BA7ACE73B5CFCEBED190C3DA /* VoiceNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F38931381C7431BC09A38A /* VoiceNotesApp.swift */; };
+		FB30B1F068F41D0AB0F3B0B8 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62FA867D2523E83D319BA57 /* Note.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0F0D787F99922EC0D832A4E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3A872EF6933B6E9BB7F614F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6234070C6E4926258461B945;
+			remoteInfo = VoiceNotes;
+		};
+		31332ED5CFBA1FC19503CD58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3A872EF6933B6E9BB7F614F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6234070C6E4926258461B945;
+			remoteInfo = VoiceNotes;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		04F38931381C7431BC09A38A /* VoiceNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceNotesApp.swift; sourceTree = "<group>"; };
+		05D655CC7CBD254B8E9C2653 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		068846EB9355EC71426503AF /* VoiceNotesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceNotesUITests.swift; sourceTree = "<group>"; };
+		07E893385CD0674B446CD913 /* VoiceNotes.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = VoiceNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29DB0DD89C35B7C135CD7BB0 /* NoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTests.swift; sourceTree = "<group>"; };
+		362881E9B7C6FBE2E814411D /* Qwen3-TTS-12Hz-0.6B-Base-4bit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Qwen3-TTS-12Hz-0.6B-Base-4bit"; path = "Models/Qwen3-TTS-12Hz-0.6B-Base-4bit"; sourceTree = SOURCE_ROOT; };
+		36A2893AAA121AA8EA006E2E /* VoiceNotesTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VoiceNotesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C3CFCBCA8F91C8642E7FE0C /* VoiceSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceSetupView.swift; sourceTree = "<group>"; };
+		4F43EEB6CE4C21CB34779AB3 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		8485A79229F1E3AF44A39089 /* TTSManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSManagerTests.swift; sourceTree = "<group>"; };
+		AE5783E034421EFE642EF764 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		B25D779CAD8FF4D2A9A21EC5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BD76E3940104EC9CE9155403 /* VoiceNotesUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VoiceNotesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C62FA867D2523E83D319BA57 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		CEF4093BCCE1A6D512C5F37C /* AudioStreamPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStreamPlayer.swift; sourceTree = "<group>"; };
+		D33386F0D6E51AA0586D546A /* NewNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteView.swift; sourceTree = "<group>"; };
+		E5127A5FBE9A90E11BD1BFE5 /* mlx-swift-qwen3-tts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mlx-swift-qwen3-tts"; path = "Packages/mlx-swift-qwen3-tts"; sourceTree = SOURCE_ROOT; };
+		EC800AAE7139B977AA4F1BE9 /* NoteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailView.swift; sourceTree = "<group>"; };
+		F313C092FDA38CC18B5ADC26 /* TTSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		443687EE5EB307DB3702960C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A535BC8503C037A1DDEB2066 /* Qwen3TTS in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		382D0E5896844F2A4D8E8280 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07E893385CD0674B446CD913 /* VoiceNotes.app */,
+				36A2893AAA121AA8EA006E2E /* VoiceNotesTests.xctest */,
+				BD76E3940104EC9CE9155403 /* VoiceNotesUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7C025A8B2BA5FA7FAD9B705B /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				4F43EEB6CE4C21CB34779AB3 /* AudioPlayer.swift */,
+				AE5783E034421EFE642EF764 /* AudioRecorder.swift */,
+				CEF4093BCCE1A6D512C5F37C /* AudioStreamPlayer.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		8203C5E80349CFC52E178020 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				05D655CC7CBD254B8E9C2653 /* Assets.xcassets */,
+				04F38931381C7431BC09A38A /* VoiceNotesApp.swift */,
+				7C025A8B2BA5FA7FAD9B705B /* Audio */,
+				BD06774EDF7588A4A01EA52E /* Models */,
+				8245322C31D58B7DD37A372A /* ViewModels */,
+				F82ECBAC70ABFA90E110FF92 /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		8245322C31D58B7DD37A372A /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F313C092FDA38CC18B5ADC26 /* TTSManager.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		893F7A90032C0917D63552D5 /* VoiceNotesUITests */ = {
+			isa = PBXGroup;
+			children = (
+				068846EB9355EC71426503AF /* VoiceNotesUITests.swift */,
+			);
+			name = VoiceNotesUITests;
+			path = Tests/VoiceNotesUITests;
+			sourceTree = "<group>";
+		};
+		BB2A8C670747A378888247FD = {
+			isa = PBXGroup;
+			children = (
+				362881E9B7C6FBE2E814411D /* Qwen3-TTS-12Hz-0.6B-Base-4bit */,
+				E304D5F27FB8566CE5D2DB94 /* Packages */,
+				8203C5E80349CFC52E178020 /* Sources */,
+				F378843EA42EBC52C4E8F55B /* VoiceNotesTests */,
+				893F7A90032C0917D63552D5 /* VoiceNotesUITests */,
+				382D0E5896844F2A4D8E8280 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BD06774EDF7588A4A01EA52E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C62FA867D2523E83D319BA57 /* Note.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E304D5F27FB8566CE5D2DB94 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E5127A5FBE9A90E11BD1BFE5 /* mlx-swift-qwen3-tts */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		F378843EA42EBC52C4E8F55B /* VoiceNotesTests */ = {
+			isa = PBXGroup;
+			children = (
+				29DB0DD89C35B7C135CD7BB0 /* NoteTests.swift */,
+				8485A79229F1E3AF44A39089 /* TTSManagerTests.swift */,
+			);
+			name = VoiceNotesTests;
+			path = Tests/VoiceNotesTests;
+			sourceTree = "<group>";
+		};
+		F82ECBAC70ABFA90E110FF92 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B25D779CAD8FF4D2A9A21EC5 /* ContentView.swift */,
+				D33386F0D6E51AA0586D546A /* NewNoteView.swift */,
+				EC800AAE7139B977AA4F1BE9 /* NoteDetailView.swift */,
+				4C3CFCBCA8F91C8642E7FE0C /* VoiceSetupView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		017C8B27F1CF0BBA9F7C930C /* VoiceNotesUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DDCEFE02FD6926EC4558AE87 /* Build configuration list for PBXNativeTarget "VoiceNotesUITests" */;
+			buildPhases = (
+				319AD68AF503B163101F559E /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B1DEE9649A8FF9404D273BF9 /* PBXTargetDependency */,
+			);
+			name = VoiceNotesUITests;
+			packageProductDependencies = (
+			);
+			productName = VoiceNotesUITests;
+			productReference = BD76E3940104EC9CE9155403 /* VoiceNotesUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		6234070C6E4926258461B945 /* VoiceNotes */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEF97856CDF699F28DEC1282 /* Build configuration list for PBXNativeTarget "VoiceNotes" */;
+			buildPhases = (
+				5A342295BA1AF47407B0C2A3 /* Sources */,
+				8CDA0FE88B66D77C990B88FA /* Resources */,
+				443687EE5EB307DB3702960C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VoiceNotes;
+			packageProductDependencies = (
+				92B7EB74E9315C046BA4EA84 /* Qwen3TTS */,
+			);
+			productName = VoiceNotes;
+			productReference = 07E893385CD0674B446CD913 /* VoiceNotes.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CD8B2D4E837D9878722E9CB1 /* VoiceNotesTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 860DDB35894B9DA33EE7B9C6 /* Build configuration list for PBXNativeTarget "VoiceNotesTests" */;
+			buildPhases = (
+				D8E67E94016CB30C0B940BE1 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16215F843C886A8D8242D692 /* PBXTargetDependency */,
+			);
+			name = VoiceNotesTests;
+			packageProductDependencies = (
+			);
+			productName = VoiceNotesTests;
+			productReference = 36A2893AAA121AA8EA006E2E /* VoiceNotesTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C3A872EF6933B6E9BB7F614F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					017C8B27F1CF0BBA9F7C930C = {
+						TestTargetID = 6234070C6E4926258461B945;
+					};
+				};
+			};
+			buildConfigurationList = 0CAE26DE757890C97FB02FD4 /* Build configuration list for PBXProject "VoiceNotes" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BB2A8C670747A378888247FD;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B39C6D6705B67A74C434CCBA /* XCLocalSwiftPackageReference "Packages/mlx-swift-qwen3-tts" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 382D0E5896844F2A4D8E8280 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6234070C6E4926258461B945 /* VoiceNotes */,
+				CD8B2D4E837D9878722E9CB1 /* VoiceNotesTests */,
+				017C8B27F1CF0BBA9F7C930C /* VoiceNotesUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8CDA0FE88B66D77C990B88FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A4865E36F15266751D5BD4A /* Assets.xcassets in Resources */,
+				27D181177CE625BDBDBE5AFD /* Qwen3-TTS-12Hz-0.6B-Base-4bit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		319AD68AF503B163101F559E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E6FFF3143D6343D63E71441 /* VoiceNotesUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5A342295BA1AF47407B0C2A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D1E5ACC7DAC6874896D2F7B /* AudioPlayer.swift in Sources */,
+				42C56E4E9030E9693A0B4513 /* AudioRecorder.swift in Sources */,
+				2218329C6C16298CEAC16EC2 /* AudioStreamPlayer.swift in Sources */,
+				3D302AA1154BE8FF042BAF5C /* ContentView.swift in Sources */,
+				98BCDB79AA0C201F445FA76D /* NewNoteView.swift in Sources */,
+				FB30B1F068F41D0AB0F3B0B8 /* Note.swift in Sources */,
+				A0EABA33E526B06D53775FCA /* NoteDetailView.swift in Sources */,
+				5BF4286E49738CBAAF88CB25 /* TTSManager.swift in Sources */,
+				BA7ACE73B5CFCEBED190C3DA /* VoiceNotesApp.swift in Sources */,
+				42E8F94471F530AAB2F49891 /* VoiceSetupView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8E67E94016CB30C0B940BE1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06A1E8BE9A45D698671D66E9 /* NoteTests.swift in Sources */,
+				5C12997897AAC733E5FC8580 /* TTSManagerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		16215F843C886A8D8242D692 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6234070C6E4926258461B945 /* VoiceNotes */;
+			targetProxy = 31332ED5CFBA1FC19503CD58 /* PBXContainerItemProxy */;
+		};
+		B1DEE9649A8FF9404D273BF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6234070C6E4926258461B945 /* VoiceNotes */;
+			targetProxy = 0F0D787F99922EC0D832A4E8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0B37D62C7FFD22BB94BAE154 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.remargatech.VoiceNotesUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = VoiceNotes;
+			};
+			name = Release;
+		};
+		0D76EC01BDBD72C2FD1B2DCB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		539BE25B52C05E4C95F10F7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.remargatech.VoiceNotes;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		58FD53925B7C390B02C203CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		80C9F8208C1B880955895736 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.remargatech.VoiceNotesTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VoiceNotes.app/VoiceNotes";
+			};
+			name = Debug;
+		};
+		CFB8F1CB434FDACBF56084FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.remargatech.VoiceNotesUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = VoiceNotes;
+			};
+			name = Debug;
+		};
+		E4B02762EF2E1F8A13361291 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.remargatech.VoiceNotesTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VoiceNotes.app/VoiceNotes";
+			};
+			name = Release;
+		};
+		E62DE850B7C499D47E3C8D3B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.remargatech.VoiceNotes;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0CAE26DE757890C97FB02FD4 /* Build configuration list for PBXProject "VoiceNotes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0D76EC01BDBD72C2FD1B2DCB /* Debug */,
+				58FD53925B7C390B02C203CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		860DDB35894B9DA33EE7B9C6 /* Build configuration list for PBXNativeTarget "VoiceNotesTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				80C9F8208C1B880955895736 /* Debug */,
+				E4B02762EF2E1F8A13361291 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DDCEFE02FD6926EC4558AE87 /* Build configuration list for PBXNativeTarget "VoiceNotesUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFB8F1CB434FDACBF56084FF /* Debug */,
+				0B37D62C7FFD22BB94BAE154 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FEF97856CDF699F28DEC1282 /* Build configuration list for PBXNativeTarget "VoiceNotes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				539BE25B52C05E4C95F10F7F /* Debug */,
+				E62DE850B7C499D47E3C8D3B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B39C6D6705B67A74C434CCBA /* XCLocalSwiftPackageReference "Packages/mlx-swift-qwen3-tts" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "Packages/mlx-swift-qwen3-tts";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		92B7EB74E9315C046BA4EA84 /* Qwen3TTS */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Qwen3TTS;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = C3A872EF6933B6E9BB7F614F /* Project object */;
+}
